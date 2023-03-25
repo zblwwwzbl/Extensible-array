@@ -1,18 +1,16 @@
 #include <stdio.h>
-#include "datastructures.h"
+#include <stdlib.h>
+#include "general.h"
 
 
 int main(int argc, char *argv[]){	
-    SQarray_t* SQarray = initialize_SQ_array();
-    sliced_array_t* sliced = initialize_sliced_array(DEFAULT_K);
+    void* array = initialize(DEFAULT_K, DEFAULT_ELEMENT_SIZE);
 	for (int i=0;i<256;i++) {
-        node_t new_node;
-        new_node.key = i;
-        SQarray_insert(SQarray, new_node);
-        sliced_insert(sliced, new_node);
+        char ele[DEFAULT_ELEMENT_SIZE];
+        key_t key = i;
+        memcpy(&key, ele, sizeof(key_t));
+        insert(array, ele);
     }
-    SQarray_print(SQarray);
-    sliced_print(sliced);
-    SQarray_free(SQarray);
-    sliced_free(sliced);
+    print_info(array);
+    free_mem(array);
 }
