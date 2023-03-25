@@ -1,0 +1,9 @@
+{
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "/Users/kittyyao/Desktop/大三/SQarray",
+            "binaryPath": "/Users/kittyyao/Desktop/大三/SQarray/test",
+            "binaryArgs": []
+        }
+    ]
+}
