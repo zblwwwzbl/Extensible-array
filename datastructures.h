@@ -21,7 +21,7 @@ typedef struct{
     unsigned int last_seg_num_elements;
     unsigned int num_elements;
     double growth_multiplier;
-} dope_vector_t;
+} handle_t;
 
 /**
  * @brief data structure SQarray as described in
@@ -35,13 +35,13 @@ typedef struct{
  * 
  */
 typedef struct {
-    dope_vector_t* handle;
+    handle_t* handle;
     unsigned int cur_l;
     unsigned int length_counter;
 } SQarray_t;
 
 typedef struct {
-    dope_vector_t* handle;
+    handle_t* handle;
     unsigned int segment_size;
 } sliced_array_t;
 
@@ -50,10 +50,10 @@ typedef struct {
     unsigned int offset;
 } index_t;
 
-dope_vector_t* initialize_dope_vector(unsigned int init_size, double growth_mult);
+handle_t* initialize_dope_vector(unsigned int init_size, double growth_mult);
 SQarray_t* initialize_SQ_array();
 index_t* address_mapping(unsigned int v);
-void insert_segment(dope_vector_t* handle, unsigned int segsize);
+void insert_segment(handle_t* handle, unsigned int segsize);
 void SQarray_insert(SQarray_t* SQarray, node_t new_ele);
 node_t SQarray_get(SQarray_t* SQarray, unsigned int v);
 void SQarray_free(SQarray_t* SQarray);

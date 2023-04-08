@@ -17,14 +17,10 @@ typedef struct{
     word_t num_elements;
     word_t element_size;
     double growth_multiplier;
-} dope_vector_t;
+} handle_t;
 
-inline dope_vector_t* initialize_dope_vector(word_t init_size, double growth_mult, word_t element_size);
-inline void insert_segment(dope_vector_t* handle, word_t segsize);
-inline void dope_insert(dope_vector_t* handle, char new_ele[]);
-inline void* dope_get(dope_vector_t* handle, word_t segnum, word_t offset);
-inline void* initialize(word_t k, word_t element_size);
-inline void insert(void* array, char new_ele[]);
-inline void* get(void* array, word_t v);
-inline void free_mem(void* array);
-inline void print_info(void* array);
+handle_t* initialize_dope_vector(word_t init_size, double growth_mult, word_t element_size);
+void insert_segment(handle_t* handle, word_t segsize);
+void dope_insert(handle_t* handle, char new_ele[]);
+void* dope_get(handle_t* handle, word_t segnum, word_t offset);
+void dope_update(handle_t* handle, word_t segnum, word_t offset, char new_ele[]);

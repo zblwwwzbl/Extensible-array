@@ -4,6 +4,29 @@
             "cwd": "/Users/kittyyao/Desktop/大三/SQarray",
             "binaryPath": "/Users/kittyyao/Desktop/大三/SQarray/test",
             "binaryArgs": []
+        },
+        {
+            "cwd": "/Users/kittyyao/Desktop/大三/SQarray",
+            "binaryPath": "/Users/kittyyao/Desktop/大三/SQarray/reverseSQ",
+            "binaryArgs": []
+        },
+        {
+            "cwd": "/Users/kittyyao/Desktop/大三/SQarray",
+            "binaryPath": "/Users/kittyyao/Desktop/大三/SQarray/testMono",
+            "binaryArgs": []
+        },
+        {
+            "cwd": "/Users/kittyyao/Desktop/大三/SQarray",
+            "binaryPath": "/Users/kittyyao/Desktop/大三/SQarray/insertSliced",
+            "binaryArgs": []
+        },
+        {
+            "cwd": "/Users/kittyyao/Desktop/大三/SQarray",
+            "binaryPath": "/Users/kittyyao/Desktop/大三/SQarray/testSliced",
+            "binaryArgs": []
         }
-    ]
+    ],
+    "files.associations": {
+        "stdlib.h": "c"
+    }
 }

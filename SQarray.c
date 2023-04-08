@@ -1,7 +1,21 @@
 #include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
 #include"SQarray.h"
+#include"interface.h"
 
-inline void* initialize(word_t k, word_t element_size) {
+typedef struct {
+    handle_t* handle;
+    word_t cur_l;
+    word_t length_counter;
+} SQarray_t;
+
+typedef struct {
+    word_t segnum;
+    word_t offset;
+} index_t;
+
+void* initialize(word_t k, word_t element_size, word_t init_size) {
     SQarray_t* new_SQ = (SQarray_t*)malloc(sizeof(SQarray_t));
     new_SQ->handle = initialize_dope_vector(DOPE_INIT_SIZE, DEFAULT_GROWTH, element_size);
     new_SQ->cur_l = 1;
@@ -15,7 +29,7 @@ inline static index_t* address_mapping(word_t v) {
     if (v == 0) { 
         b = 1; 
     } else { 
-        b = sizeof(word_t) + shift - __builtin_clz(v);
+        b = 33 - __builtin_clz(v);
         b = b >> shift;
     }
     index_t* index = (index_t*)malloc(sizeof(index_t));
@@ -24,9 +38,9 @@ inline static index_t* address_mapping(word_t v) {
     return index;
 }
 
-inline void insert(void* array, char new_ele[]) {
+void insert(void* array, char new_ele[]) {
     SQarray_t* SQarray = (SQarray_t*) array;
-    dope_vector_t* handle = SQarray->handle;
+    handle_t* handle = SQarray->handle;
     word_t seg_size = (word_t) 1 << SQarray->cur_l;
     if (handle->last_seg_num_elements == seg_size || handle->num_elements == 0) {
         if (SQarray->length_counter == 0) {
@@ -40,7 +54,7 @@ inline void insert(void* array, char new_ele[]) {
     dope_insert(handle, new_ele);
 }
 
-inline void* get(void* array, word_t v) {
+void* get(void* array, word_t v) {
     SQarray_t* SQarray = (SQarray_t*) array;
     index_t* index = address_mapping(v);
     void* ele = dope_get(SQarray->handle, index->segnum, index->offset);
@@ -48,9 +62,21 @@ inline void* get(void* array, word_t v) {
     return ele;
 }
 
-inline void free_mem(void* array) {
+word_t size(void* array) {
     SQarray_t* SQarray = (SQarray_t*) array;
-    dope_vector_t* handle = SQarray->handle;
+    return SQarray->handle->num_elements;
+}
+
+void update(void* array, word_t v, char new_ele[]) {
+    SQarray_t* SQarray = (SQarray_t*) array;
+    index_t* index = address_mapping(v);
+    dope_update(SQarray->handle, index->segnum, index->offset, new_ele);
+    free(index);
+}
+
+void free_mem(void* array) {
+    SQarray_t* SQarray = (SQarray_t*) array;
+    handle_t* handle = SQarray->handle;
     for (int i = 0; i < handle->num_segs;i++) {
         free(handle->dope[i]);
     }
@@ -60,9 +86,9 @@ inline void free_mem(void* array) {
 }
 
 
-inline void print_info(void* array) {
+void print_info(void* array) {
     SQarray_t* SQarray = (SQarray_t*) array;
-    dope_vector_t* handle = SQarray->handle;
+    handle_t* handle = SQarray->handle;
     word_t cur_l = 1;
     word_t cur_seg = 0;
     word_t counter = 2;
@@ -86,4 +112,10 @@ inline void print_info(void* array) {
         counter = 3*(1 << (cur_l - 2));
         cur_seg_length = (word_t) 1 << cur_l;
     }
+}
+
+char* name(void* array) {
+    char* name = malloc(sizeof(char)*10);
+    strncpy(name, "SQ", 10);
+    return name;
 }

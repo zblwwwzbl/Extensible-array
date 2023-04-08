@@ -13,8 +13,8 @@
 #include"datastructures.h"
 
 
-dope_vector_t* initialize_dope_vector(unsigned int init_size, double growth_mult) {
-    dope_vector_t* new_dope_vec = (dope_vector_t*)malloc(sizeof(dope_vector_t));
+handle_t* initialize_dope_vector(unsigned int init_size, double growth_mult) {
+    handle_t* new_dope_vec = (handle_t*)malloc(sizeof(handle_t));
     new_dope_vec->dope_size = init_size;
     new_dope_vec->dope = (node_t**)malloc(sizeof(node_t*)*init_size);
     for (int i=0;i<init_size;i++) {
@@ -51,7 +51,7 @@ index_t* address_mapping(unsigned int v) {
     return index;
 }
 
-void insert_segment(dope_vector_t* handle, unsigned int segsize) {
+void insert_segment(handle_t* handle, unsigned int segsize) {
     if (handle->num_segs == handle->dope_size) {
         handle->dope_size = handle->growth_multiplier * handle->dope_size;
         handle->dope = (node_t**)realloc(handle->dope,sizeof(node_t*)*(handle->dope_size));
@@ -63,7 +63,7 @@ void insert_segment(dope_vector_t* handle, unsigned int segsize) {
 }
 
 void SQarray_insert(SQarray_t* SQarray, node_t new_ele) {
-    dope_vector_t* handle = SQarray->handle;
+    handle_t* handle = SQarray->handle;
     unsigned int seg_size = (unsigned int) 1 << SQarray->cur_l;
     if (handle->last_seg_num_elements == seg_size || handle->num_elements == 0) {
         if (SQarray->length_counter == 0) {
@@ -87,7 +87,7 @@ node_t SQarray_get(SQarray_t* SQarray, unsigned int v) {
 }
 
 void SQarray_free(SQarray_t* SQarray) {
-    dope_vector_t* handle = SQarray->handle;
+    handle_t* handle = SQarray->handle;
     for (int i = 0; i < handle->num_segs;i++) {
         free(handle->dope[i]);
     }
@@ -118,7 +118,7 @@ void SQarray_free(SQarray_t* SQarray) {
 
 
 void SQarray_print(SQarray_t* SQarray) {
-    dope_vector_t* handle = SQarray->handle;
+    handle_t* handle = SQarray->handle;
     unsigned int cur_l = 1;
     unsigned int cur_seg = 0;
     unsigned int counter = 2;
@@ -150,7 +150,7 @@ sliced_array_t* initialize_sliced_array(unsigned int k) {
 }
 
 void sliced_insert(sliced_array_t* sliced, node_t new_ele) {
-    dope_vector_t* handle = sliced->handle;
+    handle_t* handle = sliced->handle;
     if (handle->last_seg_num_elements == handle->last_seg_size) {
         insert_segment(handle,sliced->segment_size);
     }
@@ -164,7 +164,7 @@ node_t sliced_get(sliced_array_t* sliced, unsigned int v) {
 }
 
 void sliced_print(sliced_array_t* sliced) {
-    dope_vector_t* handle = sliced->handle;
+    handle_t* handle = sliced->handle;
     for (unsigned int i = 0; i < handle->num_segs;i++) {
         printf("segment %d:", i);
         for (unsigned int j = 0; j < sliced->segment_size;j++) {
@@ -176,7 +176,7 @@ void sliced_print(sliced_array_t* sliced) {
 }
 
 void sliced_free(sliced_array_t* sliced) {
-     dope_vector_t* handle = sliced->handle;
+     handle_t* handle = sliced->handle;
     for (int i = 0; i < handle->num_segs;i++) {
         free(handle->dope[i]);
     }
