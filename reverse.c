@@ -13,10 +13,21 @@
     #define R 2
 #endif
 
+static inline void reverse(void* array, word_t ele_size) {
+    word_t n = size(array);
+    char temp[ele_size];
+    for (int i=0;i<n/2;i++) {
+        void* a = get(array, i);
+        void* b = get(array, n-1-i);
+        memcpy(temp, a, ele_size);
+        memcpy(a, b, ele_size);
+        memcpy(b, temp, ele_size);
+    }
+}
+
 int main(int argc, char *argv[]) {
-    FILE* fp = fopen("./data/insert_results.csv", "a");
-    srand(SEED); 
-    float startTime = (float)clock()/CLOCKS_PER_SEC;
+    FILE* fp = fopen("./data/reverse_results.csv", "a"); 
+    srand(SEED);
     void* array = initialize(DEFAULT_K, SIZE, NUM_DATA, R);
     for (int i=0;i<NUM_DATA;i++) {
         char ele[SIZE];
@@ -24,6 +35,8 @@ int main(int argc, char *argv[]) {
         memcpy(ele, &key, sizeof(key_t));
         insert(array, ele);
     }
+    float startTime = (float)clock()/CLOCKS_PER_SEC;
+    reverse(array, SIZE);
     float endTime = (float)clock()/CLOCKS_PER_SEC;
     float timeElapsed = endTime - startTime;
     word_t rand_index = (word_t) rand() % NUM_DATA;

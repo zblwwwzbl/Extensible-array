@@ -1,7 +1,6 @@
 #include <string.h>
 #include<stdlib.h>
 #include<stdio.h>
-#include "monolithic.h"
 #include "interface.h"
 
 typedef struct {
@@ -11,7 +10,7 @@ typedef struct {
     word_t element_size;
 } monolithic_t;
 
-void* initialize(word_t k, word_t element_size, word_t init_size) {
+void* initialize(word_t k, word_t element_size, word_t init_size, word_t r) {
     monolithic_t* mono = (monolithic_t*)malloc(sizeof(monolithic_t));
     mono->nodes = (char*)malloc(sizeof(char)*init_size*element_size);
     mono->size = init_size;

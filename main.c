@@ -4,8 +4,9 @@
 #include <time.h>
 #include "interface.h"
 
-#define DATA 128
-#define ELE_SIZE 64
+#define DATA (1 << 4)
+#define ELE_SIZE 32
+#define R 3
 
 typedef struct {
     void* data;
@@ -17,7 +18,7 @@ matrix_t* create_matrix(word_t rows, word_t cols, word_t element_size) {
     matrix_t* matrix = (matrix_t*)malloc(sizeof(matrix_t));
     matrix->rows = rows;
     matrix->cols = cols;
-    matrix->data = initialize(DEFAULT_K, element_size, rows*cols);
+    matrix->data = initialize(DEFAULT_K, element_size, rows*cols, R);
     return matrix;
 }
 
@@ -157,23 +158,24 @@ void heap_sort(void* array, word_t n, word_t element_size) {
 int main(int argc, char *argv[]) {
     // matrix_t* m = create_matrix(16, 16, ELE_SIZE);
     // matrix_t* n = create_matrix(16, 16, ELE_SIZE);
-    void* array = initialize(DEFAULT_K, ELE_SIZE, DATA);
+    void* array = initialize(DEFAULT_K, ELE_SIZE, DATA, R);
     for (int i=0;i<DATA;i++) {
         char ele1[ELE_SIZE];
         // char ele2[ELE_SIZE];
-        key_t key = (key_t) rand() % 2;
+        key_t key = (key_t) rand()%DATA;
         memcpy(ele1, &key, sizeof(key_t));
         // memcpy(ele2, &key, sizeof(key_t));
         insert(array, ele1);
         // insert(n->data, ele2);
     }
-    print_info(array);
+    // print_info(array);
     // print_info(n->data);
     // float startTime = (float)clock()/CLOCKS_PER_SEC;
     // reverse(array);
-    // print_info(array);
-    //quicksort(array, 0, DATA-1, ELE_SIZE);
+    print_info(array);
+    quicksort(array, 0, DATA-1, ELE_SIZE);
     // heap_sort(array, DATA, ELE_SIZE);
+    print_info(array);
     // matrix_t* result = multiply(m, n, ELE_SIZE);
     for (int i=0;i<DATA;i++) {
             key_t key = *((key_t*) get(array, i));
@@ -182,10 +184,10 @@ int main(int argc, char *argv[]) {
             memcpy(ele, &key, sizeof(key_t));
             update(array, i, ele);
     }
-    print_info(array);
+    // print_info(array);
     // float endTime = (float)clock()/CLOCKS_PER_SEC;
     // float timeElapsed = endTime - startTime;
-    // print_info(array);
+    print_info(array);
     // fprintf(fp, "%s, %f, %d\n", name(array), timeElapsed, ele_size);
     // free_mem(array);
     // free_matrix(m);

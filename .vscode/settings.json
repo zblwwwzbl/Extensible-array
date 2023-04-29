@@ -24,6 +24,21 @@
             "cwd": "/Users/kittyyao/Desktop/大三/SQarray",
             "binaryPath": "/Users/kittyyao/Desktop/大三/SQarray/testSliced",
             "binaryArgs": []
+        },
+        {
+            "cwd": "/Users/kittyyao/Desktop/大三/SQarray",
+            "binaryPath": "/Users/kittyyao/Desktop/大三/SQarray/mainMS",
+            "binaryArgs": []
+        },
+        {
+            "cwd": "/Users/kittyyao/Desktop/大三/SQarray",
+            "binaryPath": "/Users/kittyyao/Desktop/大三/SQarray/testMS",
+            "binaryArgs": []
+        },
+        {
+            "cwd": "/Users/kittyyao/Desktop/大三/SQarray",
+            "binaryPath": "/Users/kittyyao/Desktop/大三/SQarray/testHAT",
+            "binaryArgs": []
         }
     ],
     "files.associations": {

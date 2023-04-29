@@ -11,7 +11,7 @@ typedef struct {
 
 
 
-void* initialize(word_t seg_size, word_t element_size, word_t init_size) {
+void* initialize(word_t seg_size, word_t element_size, word_t init_size, word_t r) {
     sliced_array_t* sliced = (sliced_array_t*)malloc(sizeof(sliced_array_t*));
     sliced->segment_size = DEFAULT_K;
     sliced->handle = initialize_dope_vector(DOPE_INIT_SIZE, DEFAULT_GROWTH, element_size);
@@ -60,7 +60,7 @@ void print_info(void* array) {
 
 void free_mem(void* array) {
     sliced_array_t* sliced = (sliced_array_t*) array;
-     handle_t* handle = sliced->handle;
+    handle_t* handle = sliced->handle;
     for (int i = 0; i < handle->num_segs;i++) {
         free(handle->dope[i]);
     }

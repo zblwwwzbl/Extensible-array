@@ -4,7 +4,7 @@
 #define LIMIT 2048
 #define SEED 19284729
 
-void* initialize(word_t seg_size, word_t element_size, word_t init_size);
+void* initialize(word_t seg_size, word_t element_size, word_t init_size, word_t r);
 void insert(void* array, char new_ele[]);
 void* get(void* array, word_t v);
 void free_mem(void* array);

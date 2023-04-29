@@ -61,7 +61,7 @@ int main(int argc, char *argv[]) {
         for (int i=0;i<MATRIX_SIZE*MATRIX_SIZE;i++) {
             char ele1[ele_size];
             char ele2[ele_size];
-            key_t key = (key_t) rand() % 10;
+            key_t key = (key_t) rand() % NUM_DATA;
             memcpy(ele1, &key, sizeof(key_t));
             memcpy(ele2, &key, sizeof(key_t));
             insert(m->data, ele1);

@@ -5,8 +5,15 @@
 #include <sys/stat.h>
 #include "interface.h"
 
+#ifndef SIZE
+    #define SIZE 12
+#endif
 
-void heapify(void* array, word_t n, word_t i, word_t element_size) {
+#ifndef R
+    #define R 2
+#endif
+
+static inline void heapify(void* array, word_t n, word_t i, word_t element_size) {
     int largest = i;
     int left_child = 2 * i + 1;
     int right_child = 2 * i + 2;
@@ -44,7 +51,7 @@ void heapify(void* array, word_t n, word_t i, word_t element_size) {
     }
 }
 
-void heap_sort(void* array, word_t n, word_t element_size) {
+static inline void heap_sort(void* array, word_t n, word_t element_size) {
     // Build a max heap from the array
     for (int i = n / 2 - 1; i >= 0; i--) {
         heapify(array, n, i, element_size);
@@ -65,19 +72,22 @@ void heap_sort(void* array, word_t n, word_t element_size) {
 int main(int argc, char *argv[]) {
     FILE* fp = fopen("./data/heapsort_results.csv", "a");
     srand(SEED); 
-    for (word_t ele_size = DEFAULT_ELEMENT_SIZE; ele_size <= LIMIT; ele_size+=DEFAULT_ELEMENT_SIZE) {
-        void* array = initialize(DEFAULT_K, ele_size, NUM_DATA);
-        for (int i=0;i<NUM_DATA;i++) {
-            char ele[ele_size];
-            key_t key = (key_t) rand() % NUM_DATA;
-            memcpy(ele, &key, sizeof(key_t));
-            insert(array, ele);
-        }
-        float startTime = (float)clock()/CLOCKS_PER_SEC;
-        heap_sort(array, NUM_DATA, ele_size);
-        float endTime = (float)clock()/CLOCKS_PER_SEC;
-        float timeElapsed = endTime - startTime;
-        fprintf(fp, "%s, %f, %d\n", name(array), timeElapsed, ele_size);
-        free_mem(array);
+    void* array = initialize(DEFAULT_K, SIZE, NUM_DATA, R);
+    for (int i=0;i<NUM_DATA;i++) {
+        char ele[SIZE];
+        key_t key = (key_t) rand() % NUM_DATA;
+        memcpy(ele, &key, sizeof(key_t));
+        insert(array, ele);
     }
+    float startTime = (float)clock()/CLOCKS_PER_SEC;
+    heap_sort(array, NUM_DATA, SIZE);
+    float endTime = (float)clock()/CLOCKS_PER_SEC;
+    float timeElapsed = endTime - startTime;
+    word_t rand_index = (word_t) rand() % NUM_DATA;
+    char* block = (char*) get(array, rand_index);
+    for (int i=0;i<SIZE;i++) {
+        block[i] = block[i]+ rand_index + i;
+    }
+    fprintf(fp, "%s, %f, %d\n", name(array), timeElapsed, SIZE);
+    free_mem(array);
 }

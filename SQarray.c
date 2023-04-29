@@ -15,7 +15,7 @@ typedef struct {
     word_t offset;
 } index_t;
 
-void* initialize(word_t k, word_t element_size, word_t init_size) {
+void* initialize(word_t k, word_t element_size, word_t init_size, word_t r) {
     SQarray_t* new_SQ = (SQarray_t*)malloc(sizeof(SQarray_t));
     new_SQ->handle = initialize_dope_vector(DOPE_INIT_SIZE, DEFAULT_GROWTH, element_size);
     new_SQ->cur_l = 1;
