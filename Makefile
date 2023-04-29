@@ -1,5 +1,5 @@
 CC = gcc
-FLAGS = -g -Wall
+FLAGS = -g -O3 -Wall
 
 all: ${target}_test
 

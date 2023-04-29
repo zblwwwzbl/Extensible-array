@@ -100,22 +100,24 @@ int main(int argc, char *argv[]) {
     FILE* fp = fopen(buffer, "a");
     srand(SEED);
     node_t* array = (node_t*)malloc(sizeof(node_t)*NUM_DATA);
+    float startTime = (float)clock()/CLOCKS_PER_SEC;
     for (unsigned int i=0;i<NUM_DATA;i++) {
         char content[SIZE];
         array[i].key = (unsigned int) rand() % NUM_DATA;
         memcpy(content, array[i].data, SIZE);
     }
-    float startTime = (float)clock()/CLOCKS_PER_SEC;
-    if (strcmp(argv[1], "reverse") == 0) {
-        reverse(array, NUM_DATA);
-    } else if (strcmp(argv[1], "incone") == 0) {
-        incone(array);
-    } else if (strcmp(argv[1], "sort") == 0) {
-        quicksort(array, 0, NUM_DATA-1);
-    } else if (strcmp(argv[1], "heapsort") == 0) {
-        heapSort(array, NUM_DATA);
-    }
     float endTime = (float)clock()/CLOCKS_PER_SEC;
+    // float startTime = (float)clock()/CLOCKS_PER_SEC;
+    // if (strcmp(argv[1], "reverse") == 0) {
+    //     reverse(array, NUM_DATA);
+    // } else if (strcmp(argv[1], "incone") == 0) {
+    //     incone(array);
+    // } else if (strcmp(argv[1], "sort") == 0) {
+    //     quicksort(array, 0, NUM_DATA-1);
+    // } else if (strcmp(argv[1], "heapsort") == 0) {
+    //     heapSort(array, NUM_DATA);
+    // }
+    // float endTime = (float)clock()/CLOCKS_PER_SEC;
     float timeElapsed = endTime - startTime;
     int rand_index = (int) rand() % NUM_DATA;
     node_t block = array[rand_index];

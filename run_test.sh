@@ -3,7 +3,7 @@ for i in {1..5}
 do
     for SIZE in $(seq 12 16 2044)
     do
-        gcc -g -DSIZE=$SIZE basic_array.c -o basic
+        gcc -g -O3 -DSIZE=$SIZE basic_array.c -o basic
         for R in {2..5}
         do
             touch ${1}.c
