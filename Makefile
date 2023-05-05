@@ -3,7 +3,7 @@ FLAGS = -g -O3 -Wall
 
 all: ${target}_test
 
-${target}_test: ${target}.o ${target}Mono ${target}Sliced ${target}SQ ${target}HAT ${target}MS_${R}
+${target}_test: ${target}.o ${target}Mono ${target}Sliced ${target}SQ ${target}HAT ${target}MS_${R} ${target}Geo
 
 ${target}Mono: ${target}.o monolithic.o general.o
 	$(CC) $(FLAGS) -o ${target}Mono ${target}.o monolithic.o general.o
@@ -20,8 +20,14 @@ ${target}HAT: ${target}.o HAT.o general.o
 ${target}MS_${R}: ${target}.o multisliced.o general.o
 	$(CC) $(FLAGS) -o ${target}MS_${R} ${target}.o multisliced.o general.o
 
+${target}Geo: ${target}.o geometric.o general.o
+	$(CC) $(FLAGS) -o ${target}Geo ${target}.o geometric.o general.o
+
 ${target}.o: ${target}.c general.h interface.h
 	$(CC) $(FLAGS) -DSIZE=${SIZE} -DR=${R} -c ${target}.c
+
+insert.o: insert.c general.h interface.h
+	$(CC) $(FLAGS) -DSIZE=${SIZE} -DR=${R} -DNUM_ELE=${NUM_ELE} -c insert.c
 
 testMS: main.o multisliced.o general.o
 	$(CC) $(FLAGS) -o testMS main.o multisliced.o general.o
@@ -47,14 +53,17 @@ monolithic.o: monolithic.c monolithic.h general.h interface.h
 HAT.o: HAT.c general.h interface.h
 	$(CC) $(FLAGS) -c HAT.c
 
+geometric.o: geometric.c general.h interface.h
+	$(CC) $(FLAGS) -c geometric.c
+
 general.o: general.c general.h
 	$(CC) $(FLAGS) -c general.c
 
 clean:
-	rm -f *.o test myprogram testMono testSliced testSQ reverseMono reverseSliced reverseSQ sortMono sortSliced sortSQ heapsortMono heapsortSQ heapsortSliced matrixmultMono matrixmultSliced matrixmultSQ inconeMono inconeSQ inconeSliced insertMono insertSQ insertSliced temp basic basic_insert
+	rm -f *.o *.exe test myprogram testMono testSliced testSQ reverseMono reverseSliced reverseSQ sortMono sortSliced sortSQ heapsortMono heapsortSQ heapsortSliced matrixmultMono matrixmultSliced matrixmultSQ inconeMono inconeSQ inconeSliced insertMono insertSQ insertSliced temp basic basic_insert
 
 clean_base:
 	rm -f ${target}.o
 
 clear_target:
-	rm -f ${target}.o ${target}Mono ${target}Sliced ${target}SQ ${target}HAT ${target}MS_2 ${target}MS_3 ${target}MS_4
+	rm -f ${target}.o ${target}Mono ${target}Sliced ${target}SQ ${target}HAT ${target}MS_2 ${target}MS_3 ${target}MS_4 ${target}Geo

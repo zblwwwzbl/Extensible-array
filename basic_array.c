@@ -8,6 +8,10 @@
     #define SIZE 12
 #endif
 
+#ifndef NUM_ELE
+    #define NUM_ELE 1048576
+#endif
+
 #define NUM_DATA 1048576
 #define LIMIT 2048
 #define SEED 19284729
@@ -19,10 +23,29 @@ typedef struct{
 
 static inline void incone(node_t* array) {
     for (unsigned int i=0;i<NUM_DATA;i++) {
-            unsigned int key = array[i].key;
-            key += 1;
-            array[i].key = key;
+        unsigned int key = array[i].key;
+        key += 1;
+        array[i].key = key;
     }
+}
+
+static inline unsigned int access(node_t* array) {
+    unsigned int count = 0;
+    for (unsigned int i=0;i<NUM_DATA;i++) {
+        unsigned int key = array[i].key;
+        count += key;
+    }
+    return count;
+}
+
+static inline unsigned int random_access(node_t* array) {
+    unsigned int count = 0;
+    for (unsigned int i=0;i<NUM_DATA;i++) {
+        unsigned int idx = rand() % NUM_DATA;
+        unsigned int key = array[idx].key;
+        count += key;
+    }
+    return count;
 }
 
 static inline void reverse(node_t *array, int num_data) {
@@ -36,7 +59,7 @@ static inline void reverse(node_t *array, int num_data) {
     }
 }
 
-static inline void quicksort(node_t arr[], unsigned int low, unsigned int high) {
+static void quicksort(node_t arr[], unsigned int low, unsigned int high) {
     if (low < high && high + 1 != 0) {
         unsigned int pivot = arr[high].key;
         unsigned int i = (low - 1);
@@ -58,7 +81,7 @@ static inline void quicksort(node_t arr[], unsigned int low, unsigned int high) 
     }
 }
 
-static inline void heapify(node_t* arr, int n, int i) {
+static void heapify(node_t* arr, int n, int i) {
     int largest = i;
     int l = 2 * i + 1;
     int r = 2 * i + 2;
@@ -79,7 +102,7 @@ static inline void heapify(node_t* arr, int n, int i) {
     }
 }
 
-static inline void heapSort(node_t* arr, int n) {
+static void heapSort(node_t* arr, int n) {
     node_t temp;
     for (int i = n / 2 - 1; i >= 0; i--)
         heapify(arr, n, i);
@@ -99,27 +122,34 @@ int main(int argc, char *argv[]) {
     sprintf(buffer, "./data/%s_results.csv", argv[1]);
     FILE* fp = fopen(buffer, "a");
     srand(SEED);
-    node_t* array = (node_t*)malloc(sizeof(node_t)*NUM_DATA);
-    float startTime = (float)clock()/CLOCKS_PER_SEC;
-    for (unsigned int i=0;i<NUM_DATA;i++) {
+    int num_ele = (int) NUM_ELE;
+    node_t* array = (node_t*)malloc(sizeof(node_t)*num_ele);
+    // float startTime = (float)clock()/CLOCKS_PER_SEC;
+    for (unsigned int i=0;i<num_ele;i++) {
         char content[SIZE];
-        array[i].key = (unsigned int) rand() % NUM_DATA;
+        array[i].key = (unsigned int) rand() % num_ele;
         memcpy(content, array[i].data, SIZE);
     }
-    float endTime = (float)clock()/CLOCKS_PER_SEC;
-    // float startTime = (float)clock()/CLOCKS_PER_SEC;
-    // if (strcmp(argv[1], "reverse") == 0) {
-    //     reverse(array, NUM_DATA);
-    // } else if (strcmp(argv[1], "incone") == 0) {
-    //     incone(array);
-    // } else if (strcmp(argv[1], "sort") == 0) {
-    //     quicksort(array, 0, NUM_DATA-1);
-    // } else if (strcmp(argv[1], "heapsort") == 0) {
-    //     heapSort(array, NUM_DATA);
-    // }
     // float endTime = (float)clock()/CLOCKS_PER_SEC;
+    float startTime = (float)clock()/CLOCKS_PER_SEC;
+    if (strcmp(argv[1], "reverse") == 0) {
+        reverse(array, NUM_DATA);
+    } else if (strcmp(argv[1], "incone") == 0) {
+        incone(array);
+    } else if (strcmp(argv[1], "sort") == 0) {
+        quicksort(array, 0, NUM_DATA-1);
+    } else if (strcmp(argv[1], "heapsort") == 0) {
+        heapSort(array, NUM_DATA);
+    } else if (strcmp(argv[1], "access") == 0) {
+        unsigned int count = access(array);
+        array[0].key = count;
+    } else if (strcmp(argv[1], "random_access") == 0) {
+        unsigned int count = random_access(array);
+        array[0].key = count;
+    }
+    float endTime = (float)clock()/CLOCKS_PER_SEC;
     float timeElapsed = endTime - startTime;
-    int rand_index = (int) rand() % NUM_DATA;
+    int rand_index = (int) rand() % num_ele;
     node_t block = array[rand_index];
     for (int i=0;i<SIZE;i++) {
         block.data[i] = block.data[i]+ rand_index + i;

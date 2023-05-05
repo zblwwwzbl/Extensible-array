@@ -1,6 +1,7 @@
 #include "general.h"
 
-#define NUM_DATA 1048576
+// #define NUM_DATA 1048576
+#define NUM_DATA (1 << 20)
 #define LIMIT 2048
 #define SEED 19284729
 

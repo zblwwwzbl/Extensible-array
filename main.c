@@ -4,8 +4,8 @@
 #include <time.h>
 #include "interface.h"
 
-#define DATA (1 << 4)
-#define ELE_SIZE 32
+#define DATA 133
+#define ELE_SIZE 34
 #define R 3
 
 typedef struct {
@@ -53,15 +53,15 @@ matrix_t* multiply(matrix_t* a, matrix_t* b, word_t element_size) {
     return result;
 }
 
-void reverse(void* array) {
+void reverse(void* array, word_t ele_size) {
     word_t n = size(array);
-    char temp[DEFAULT_ELEMENT_SIZE];
+    char temp[ele_size];
     for (int i=0;i<n/2;i++) {
         void* a = get(array, i);
         void* b = get(array, n-1-i);
-        memcpy(temp, a, DEFAULT_ELEMENT_SIZE);
-        memcpy(a, b, DEFAULT_ELEMENT_SIZE);
-        memcpy(b, temp, DEFAULT_ELEMENT_SIZE);
+        memcpy(temp, a, ele_size);
+        memcpy(a, b, ele_size);
+        memcpy(b, temp, ele_size);
     }
 }
 
@@ -173,21 +173,22 @@ int main(int argc, char *argv[]) {
     // float startTime = (float)clock()/CLOCKS_PER_SEC;
     // reverse(array);
     print_info(array);
+    // reverse(array, ELE_SIZE);
     quicksort(array, 0, DATA-1, ELE_SIZE);
     // heap_sort(array, DATA, ELE_SIZE);
     print_info(array);
     // matrix_t* result = multiply(m, n, ELE_SIZE);
-    for (int i=0;i<DATA;i++) {
-            key_t key = *((key_t*) get(array, i));
-            key += 1;
-            char ele[ELE_SIZE];
-            memcpy(ele, &key, sizeof(key_t));
-            update(array, i, ele);
-    }
+    // for (int i=0;i<DATA;i++) {
+    //         key_t key = *((key_t*) get(array, i));
+    //         key += 1;
+    //         char ele[ELE_SIZE];
+    //         memcpy(ele, &key, sizeof(key_t));
+    //         update(array, i, ele);
+    // }
     // print_info(array);
     // float endTime = (float)clock()/CLOCKS_PER_SEC;
     // float timeElapsed = endTime - startTime;
-    print_info(array);
+    // print_info(array);
     // fprintf(fp, "%s, %f, %d\n", name(array), timeElapsed, ele_size);
     // free_mem(array);
     // free_matrix(m);

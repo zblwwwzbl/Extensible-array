@@ -21,34 +21,8 @@ typedef struct {
 } index_t;
 
 inline static void combine_blocks(multisliced_t* multisliced) {
-    word_t k = 0;
     handle_t** handles = multisliced->handles;
-    for (word_t i = 0; i < multisliced->r-1;i++) {
-        if (handles[i]->num_segs < handles[i]->dope_size) {
-            k = i;
-            break;
-        }
-    }
-    for (word_t i = k-1; i != -1;i--) {
-        word_t seg_size = 1 << (multisliced->pow * (i+2));
-        word_t Bi = 1 << (multisliced->pow * (i+1));
-        handle_t *cur_handle = handles[i+1];
-        word_t mem_size = Bi*(cur_handle->element_size);
-        insert_segment(cur_handle, seg_size);
-        char* new_seg = (cur_handle->dope)[cur_handle->num_segs-1];
-        for (word_t j=0; j<multisliced->B;j++) {
-            memcpy(new_seg + j*mem_size, (handles[i]->dope)[j], mem_size);
-            free((handles[i]->dope)[j]);
-            (handles[i]->dope)[j] = NULL;
-        }
-        cur_handle->last_seg_num_elements = seg_size;
-        cur_handle->num_elements += seg_size;
-        handles[i]->num_segs = 0;
-        handles[i]->last_seg_num_elements = 0;
-        handles[i]->num_elements = 0;
-        multisliced->Ni[i+2] += seg_size;
-    }
-    for (word_t i=k;i<multisliced->r-2;i++) {
+    for (word_t i=0;i<multisliced->r-2;i++) {
         if (handles[i]->num_segs != handles[i]->dope_size) {
             break;
         }
@@ -74,7 +48,7 @@ inline static void combine_blocks(multisliced_t* multisliced) {
 }
 
 inline static void rebuild(multisliced_t* multisliced) {
-    // assume B > 2^(r-1)
+    // assume B >= 2^(r-1)
     handle_t** handles = multisliced->handles;
     word_t blocks = multisliced->B;
     word_t last_mult = 1 << (multisliced->r-1);
@@ -120,41 +94,24 @@ void* initialize(word_t seg_size, word_t element_size, word_t init_size, word_t 
     return multisliced;
 }
 
-inline static index_t* address_mapping(multisliced_t* multisliced, word_t v) {
+inline static index_t address_mapping(multisliced_t* multisliced, word_t v) {
     handle_t** handles = multisliced->handles;
-    // word_t diff = multisliced->N - v;
-    // word_t k;
-    // if (diff == 0) {
-    //     k = 0;
-    // } else {
-    //     k = (31 - __builtin_clz(diff))/(multisliced->pow);
-    // }
-    // word_t Nkp1 = 0;
-    // for (int i=k;i < multisliced->r - 1;i++) {
-    //     Nkp1 += handles[i]->num_segs * (1 << (multisliced->pow * (i+1)));
-    // }
-    // if (k == 0 && handles[0]->last_seg_num_elements != multisliced->B) {
-    //     Nkp1 -= multisliced->B;                   
-    // }
-    word_t k = 0;
-    for (int i=0;i<multisliced->r;i++) {
-        if (multisliced->Ni[i+1] <= v && v < multisliced->Ni[i]) {
-            k = i;
-            break;
-        }
-    }
-    word_t Bk = 1 << (multisliced->pow * k);
-    word_t offset = (v - multisliced->Ni[k+1]) % Bk;
-    word_t segnum = (v - multisliced->Ni[k+1]) / Bk;
-    index_t* index = (index_t*)malloc(sizeof(index_t));
+    word_t diff = multisliced->N ^ v;
+    word_t k = (31 - __builtin_clz(diff))/(multisliced->pow);
+    word_t Bk_index = multisliced->pow * k;
+    word_t Bk = 1 << Bk_index;
+    word_t mask = Bk - 1;
+    word_t segnum = (v - multisliced->Ni[k+1]) >> Bk_index;
+    index_t index;
     if (k == 0) {
-        index->block = 0;
-        index->segnum = handles[0]->num_segs-1;
-        index->offset = segnum;
+        index.block = 0;
+        index.segnum = handles[0]->num_segs-1;
+        index.offset = segnum;
     } else {
-        index->block = k-1;
-        index->segnum = segnum;
-        index->offset = offset;
+        word_t offset = (v - multisliced->Ni[k+1]) & mask;
+        index.block = k-1;
+        index.segnum = segnum;
+        index.offset = offset;
     }
     return index;
 }
@@ -163,17 +120,10 @@ void insert(void* array, char new_ele[]) {
     multisliced_t* multisliced = (multisliced_t*)array;
     handle_t** handles = multisliced->handles;
     handle_t* h1 = handles[0];
-    // if (multisliced->N == 1 << (multisliced->pow * multisliced->r)) {
-    //     rebuild(multisliced);
-    // } 
-    // else if (h1->num_segs == h1->dope_size && 
-    //     h1->last_seg_num_elements == h1->last_seg_size) {
-    //     combine_blocks(multisliced);
-    // } 
     if (h1->last_seg_num_elements == h1->last_seg_size || 
                h1->num_elements == 0) {
         insert_segment(h1, multisliced->B);
-        if (h1->num_elements != 0) {
+        if (h1->num_elements != 0 && multisliced->Ni[1] < multisliced->N) {
             multisliced->Ni[1] += multisliced->B;
         }
     }
@@ -194,9 +144,8 @@ void insert(void* array, char new_ele[]) {
 void* get(void* array, word_t v) {
     multisliced_t* multisliced = (multisliced_t*)array;
     handle_t** handles = multisliced->handles;
-    index_t* index = address_mapping(multisliced, v);
-    void* ele = dope_get(handles[index->block], index->segnum, index->offset);
-    free(index);
+    index_t index = address_mapping(multisliced, v);
+    void* ele = dope_get(handles[index.block], index.segnum, index.offset);
     return ele;
 }
 
@@ -240,9 +189,8 @@ word_t size(void* array) {
 
 void update(void* array, word_t v, char new_ele[]) {
     multisliced_t* multisliced = (multisliced_t*)array;
-    index_t* index = address_mapping(multisliced, v);
-    dope_update((multisliced->handles)[index->block], index->segnum, index->offset, new_ele);
-    free(index);
+    index_t index = address_mapping(multisliced, v);
+    dope_update((multisliced->handles)[index.block], index.segnum, index.offset, new_ele);
 }
 
 

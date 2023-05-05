@@ -3,6 +3,8 @@
 #define DEFAULT_GROWTH 2
 #define DOPE_INIT_SIZE 16
 #define DEFAULT_K 16
+#define DEFAULT_K_POW 4
+#define DEFAULT_K_MASK 0xF
 #define DEFAULT_ELEMENT_SIZE 16
 
 typedef unsigned int word_t;

@@ -23,7 +23,7 @@ void* initialize(word_t k, word_t element_size, word_t init_size, word_t r) {
     return (void*) new_SQ;
 }
 
-inline static index_t* address_mapping(word_t v) {
+inline static index_t address_mapping(word_t v) {
     word_t b;
     word_t shift = 1;
     if (v == 0) { 
@@ -32,9 +32,9 @@ inline static index_t* address_mapping(word_t v) {
         b = 33 - __builtin_clz(v);
         b = b >> shift;
     }
-    index_t* index = (index_t*)malloc(sizeof(index_t));
-    index->segnum = (v >> b) + (shift << (b-shift)) - shift;
-    index->offset = v & ((shift << b) - shift);
+    index_t index;
+    index.segnum = (v >> b) + (shift << (b-shift)) - shift;
+    index.offset = v & ((shift << b) - shift);
     return index;
 }
 
@@ -56,9 +56,8 @@ void insert(void* array, char new_ele[]) {
 
 void* get(void* array, word_t v) {
     SQarray_t* SQarray = (SQarray_t*) array;
-    index_t* index = address_mapping(v);
-    void* ele = dope_get(SQarray->handle, index->segnum, index->offset);
-    free(index);
+    index_t index = address_mapping(v);
+    void* ele = dope_get(SQarray->handle, index.segnum, index.offset);
     return ele;
 }
 
@@ -69,9 +68,8 @@ word_t size(void* array) {
 
 void update(void* array, word_t v, char new_ele[]) {
     SQarray_t* SQarray = (SQarray_t*) array;
-    index_t* index = address_mapping(v);
-    dope_update(SQarray->handle, index->segnum, index->offset, new_ele);
-    free(index);
+    index_t index = address_mapping(v);
+    dope_update(SQarray->handle, index.segnum, index.offset, new_ele);
 }
 
 void free_mem(void* array) {

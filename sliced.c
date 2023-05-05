@@ -30,7 +30,7 @@ void insert(void* array, char new_ele[]) {
 
 void* get(void* array, word_t v) {
     sliced_array_t* sliced = (sliced_array_t*) array;
-    return dope_get(sliced->handle,v / DEFAULT_K, v % DEFAULT_K);
+    return dope_get(sliced->handle,v >> DEFAULT_K_POW, v & DEFAULT_K_MASK);
 }
 
 word_t size(void* array) {
@@ -40,7 +40,7 @@ word_t size(void* array) {
 
 void update(void* array, word_t v, char new_ele[]) {
     sliced_array_t* sliced = (sliced_array_t*) array;
-    dope_update(sliced->handle, v / DEFAULT_K, v % DEFAULT_K, new_ele);
+    dope_update(sliced->handle, v >> DEFAULT_K_POW, v & DEFAULT_K_MASK, new_ele);
 }
 
 void print_info(void* array) {
