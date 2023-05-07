@@ -4,9 +4,9 @@
 #include <time.h>
 #include "interface.h"
 
-#define DATA 133
-#define ELE_SIZE 34
-#define R 3
+#define DATA 16
+#define ELE_SIZE 140
+#define R 2
 
 typedef struct {
     void* data;
@@ -154,13 +154,27 @@ void heap_sort(void* array, word_t n, word_t element_size) {
     }
 }
 
+void random_access(void* array, word_t size) {
+    key_t count = 0;
+    for (int i=0;i<DATA;i++) {
+        word_t idx = i;
+        char* ele = (char*) get(array, idx);
+        key_t key = *((key_t*) ele);
+        count += key;
+        count &= ~(*((key_t*) ele+size-sizeof(key_t)-1));
+        printf("%ld-", key);
+        printf("%ld ", count);
+    }
+    
+}
+
 
 int main(int argc, char *argv[]) {
     // matrix_t* m = create_matrix(16, 16, ELE_SIZE);
     // matrix_t* n = create_matrix(16, 16, ELE_SIZE);
     void* array = initialize(DEFAULT_K, ELE_SIZE, DATA, R);
     for (int i=0;i<DATA;i++) {
-        char ele1[ELE_SIZE];
+        char ele1[ELE_SIZE] = {[0 ... ELE_SIZE-1] = -1};
         // char ele2[ELE_SIZE];
         key_t key = (key_t) rand()%DATA;
         memcpy(ele1, &key, sizeof(key_t));
@@ -174,9 +188,11 @@ int main(int argc, char *argv[]) {
     // reverse(array);
     print_info(array);
     // reverse(array, ELE_SIZE);
-    quicksort(array, 0, DATA-1, ELE_SIZE);
+    // quicksort(array, 0, DATA-1, ELE_SIZE);
+    printf("\n ");
+    random_access(array, ELE_SIZE);
     // heap_sort(array, DATA, ELE_SIZE);
-    print_info(array);
+    // print_info(array);
     // matrix_t* result = multiply(m, n, ELE_SIZE);
     // for (int i=0;i<DATA;i++) {
     //         key_t key = *((key_t*) get(array, i));

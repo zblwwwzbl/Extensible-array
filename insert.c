@@ -18,13 +18,13 @@
 #endif
 
 int main(int argc, char *argv[]) {
-    FILE* fp = fopen("./data/insert_length_results.csv", "a");
+    FILE* fp = fopen("./data/insert_results.csv", "a");
     srand(SEED); 
     float startTime = (float)clock()/CLOCKS_PER_SEC;
     word_t num_ele = (word_t) NUM_ELE;
     void* array = initialize(DEFAULT_K, SIZE, num_ele, R);
     for (int i=0;i<num_ele;i++) {
-        char ele[SIZE] = {[0 ... SIZE-1] = -1}
+        char ele[SIZE] = {[0 ... SIZE-1] = -1};
         key_t key = (key_t) rand() % num_ele;
         memcpy(ele, &key, sizeof(key_t));
         insert(array, ele);
@@ -36,6 +36,6 @@ int main(int argc, char *argv[]) {
     for (int i=0;i<SIZE;i++) {
         block[i] = block[i]+ rand_index + i;
     }
-    fprintf(fp, "%s, %f, %d\n", name(array), timeElapsed, num_ele);
+    fprintf(fp, "%s, %f, %d\n", name(array), timeElapsed, SIZE);
     free_mem(array);
 }

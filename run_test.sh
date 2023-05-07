@@ -1,5 +1,5 @@
 echo "array_type,time,element_size" > "./data/${1}_results.csv"
-for i in {1..5}
+for i in {1..1}
 do
     for SIZE in $(seq 12 16 2044)
     do

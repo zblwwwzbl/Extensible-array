@@ -126,7 +126,7 @@ int main(int argc, char *argv[]) {
     node_t* array = (node_t*)malloc(sizeof(node_t)*num_ele);
     // float startTime = (float)clock()/CLOCKS_PER_SEC;
     for (unsigned int i=0;i<num_ele;i++) {
-        char content[SIZE];
+        char content[SIZE] = {[0 ... SIZE-1] = -1};
         array[i].key = (unsigned int) rand() % num_ele;
         memcpy(content, array[i].data, SIZE);
     }

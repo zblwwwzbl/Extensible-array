@@ -17,7 +17,7 @@ int main(int argc, char *argv[]) {
     srand(SEED);
     void* array = initialize(DEFAULT_K, SIZE, NUM_DATA, R);
     for (int i=0;i<NUM_DATA;i++) {
-        char ele[SIZE];
+        char ele[SIZE] = {[0 ... SIZE-1] = -1};
         key_t key = (key_t) rand() % NUM_DATA;
         memcpy(ele, &key, sizeof(key_t));
         insert(array, ele);
@@ -26,8 +26,10 @@ int main(int argc, char *argv[]) {
     float startTime = (float)clock()/CLOCKS_PER_SEC;
     for (int i=0;i<NUM_DATA;i++) {
         word_t idx = rand() % NUM_DATA;
-        key_t key = *((key_t*) get(array, idx));
+        char* ele = (char*) get(array, idx);
+        key_t key = *((key_t*) ele);
         count += key;
+        count &= ~(*((key_t*) ele+8));
     }
     float endTime = (float)clock()/CLOCKS_PER_SEC;
     float timeElapsed = endTime - startTime;
@@ -37,6 +39,6 @@ int main(int argc, char *argv[]) {
         block[i] = block[i]+ rand_index + i;
     }
     memcpy(block, &count, sizeof(key_t));
-    fprintf(fp, "%s, %f, %d\n", name(array), timeElapsed, SIZE);
+    fprintf(fp, "%s, %f, %d, %ld\n", name(array), timeElapsed, SIZE, count);
     free_mem(array);
 }
