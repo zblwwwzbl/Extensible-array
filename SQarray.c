@@ -16,7 +16,7 @@ typedef struct {
 } index_t;
 
 void* initialize(word_t k, word_t element_size, word_t init_size, word_t r) {
-    SQarray_t* new_SQ = (SQarray_t*)malloc(sizeof(SQarray_t));
+    SQarray_t* new_SQ = (SQarray_t*)Malloc(sizeof(SQarray_t));
     new_SQ->handle = initialize_dope_vector(DOPE_INIT_SIZE, DEFAULT_GROWTH, element_size);
     new_SQ->cur_l = 1;
     new_SQ->length_counter = 2;
@@ -70,6 +70,23 @@ void update(void* array, word_t v, char new_ele[]) {
     SQarray_t* SQarray = (SQarray_t*) array;
     index_t index = address_mapping(v);
     dope_update(SQarray->handle, index.segnum, index.offset, new_ele);
+}
+
+void make_space(void* array) {
+    SQarray_t* SQarray = (SQarray_t*) array;
+    handle_t* handle = SQarray->handle;
+    word_t seg_size = (word_t) 1 << SQarray->cur_l;
+    if (handle->last_seg_num_elements == seg_size || handle->num_elements == 0) {
+        if (SQarray->length_counter == 0) {
+            SQarray->cur_l += 1;
+            SQarray->length_counter = 3*(1 << (SQarray->cur_l - 2));
+            seg_size = (word_t) 1 << SQarray->cur_l;
+        }
+        SQarray->length_counter -= 1;
+        insert_segment(handle,seg_size);
+    }
+    handle->last_seg_num_elements += 1;
+    handle->num_elements += 1;
 }
 
 void free_mem(void* array) {

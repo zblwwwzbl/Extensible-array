@@ -17,7 +17,7 @@
 #define SEED 19284729
 
 typedef struct{
-    unsigned int key;
+    long key;
     char data[SIZE];
 } node_t;
 
@@ -61,7 +61,7 @@ static inline void reverse(node_t *array, int num_data) {
 
 static void quicksort(node_t arr[], unsigned int low, unsigned int high) {
     if (low < high && high + 1 != 0) {
-        unsigned int pivot = arr[high].key;
+        long pivot = arr[high].key;
         unsigned int i = (low - 1);
         node_t temp;
         for (int j = low; j <= high - 1; j++) {
@@ -154,6 +154,6 @@ int main(int argc, char *argv[]) {
     for (int i=0;i<SIZE;i++) {
         block.data[i] = block.data[i]+ rand_index + i;
     }
-    fprintf(fp, "%s, %f, %lu\n", "base", timeElapsed, sizeof(node_t));
+    fprintf(fp, "%s, %f, %d\n", "base", timeElapsed, num_ele);
     free(array);
 }

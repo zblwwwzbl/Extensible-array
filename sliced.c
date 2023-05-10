@@ -12,7 +12,7 @@ typedef struct {
 
 
 void* initialize(word_t seg_size, word_t element_size, word_t init_size, word_t r) {
-    sliced_array_t* sliced = (sliced_array_t*)malloc(sizeof(sliced_array_t*));
+    sliced_array_t* sliced = (sliced_array_t*)Malloc(sizeof(sliced_array_t));
     sliced->segment_size = DEFAULT_K;
     sliced->handle = initialize_dope_vector(DOPE_INIT_SIZE, DEFAULT_GROWTH, element_size);
     return (void*)sliced;
@@ -41,6 +41,17 @@ word_t size(void* array) {
 void update(void* array, word_t v, char new_ele[]) {
     sliced_array_t* sliced = (sliced_array_t*) array;
     dope_update(sliced->handle, v >> DEFAULT_K_POW, v & DEFAULT_K_MASK, new_ele);
+}
+
+void make_space(void* array) {
+    sliced_array_t* sliced = (sliced_array_t*) array;
+    handle_t* handle = sliced->handle;
+    // printf("%d ", sliced->segment_size);
+    if (handle->last_seg_num_elements == handle->last_seg_size || handle->num_elements == 0) {
+        insert_segment(handle, DEFAULT_K);
+    }
+    handle->last_seg_num_elements += 1;
+    handle->num_elements += 1;
 }
 
 void print_info(void* array) {

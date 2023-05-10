@@ -26,3 +26,8 @@ void insert_segment(handle_t* handle, word_t segsize);
 void dope_insert(handle_t* handle, char new_ele[]);
 void* dope_get(handle_t* handle, word_t segnum, word_t offset);
 void dope_update(handle_t* handle, word_t segnum, word_t offset, char new_ele[]);
+void* Malloc(word_t size);
+void* Calloc(word_t n, word_t size);
+void* Realloc(void* ptr, word_t size, word_t original);
+void Free(void* ptr, word_t size);
+void set_instantaneous(word_t val);

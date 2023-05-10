@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
     srand(SEED);
     void* array = initialize(DEFAULT_K, SIZE, NUM_DATA, R);
     for (int i=0;i<NUM_DATA;i++) {
-        char ele[SIZE];
+        char ele[SIZE] = {[0 ... SIZE-1] = -1};
         key_t key = (key_t) rand() % NUM_DATA;
         memcpy(ele, &key, sizeof(key_t));
         insert(array, ele);

@@ -34,7 +34,7 @@ inline static void combine_blocks(multisliced_t* multisliced) {
         char* new_seg = (cur_handle->dope)[cur_handle->num_segs-1];
         for (word_t j=0; j<multisliced->B;j++) {
             memcpy(new_seg + j*mem_size, (handles[i]->dope)[j], mem_size);
-            free((handles[i]->dope)[j]);
+            Free((handles[i]->dope)[j], mem_size);
             (handles[i]->dope)[j] = NULL;
         }
         cur_handle->last_seg_num_elements = seg_size;
@@ -43,8 +43,8 @@ inline static void combine_blocks(multisliced_t* multisliced) {
         handles[i]->last_seg_num_elements = 0;
         handles[i]->num_elements = 0;
         multisliced->Ni[i+2] += seg_size;
+        set_instantaneous(cur_handle->element_size*seg_size);
     }
-
 }
 
 inline static void rebuild(multisliced_t* multisliced) {
@@ -60,15 +60,15 @@ inline static void rebuild(multisliced_t* multisliced) {
     word_t last_seg_size = 1 << (multisliced->pow * (multisliced->r-1));
     word_t mem_size = old_last_seg*(last_handle->element_size);
     for (word_t i=0; i<multisliced->r-1;i++) {
-        handles[i]->dope = (char**) realloc(handles[i]->dope, sizeof(char*)*multisliced->B);
+        handles[i]->dope = (char**) Realloc(handles[i]->dope, sizeof(char*)*multisliced->B, sizeof(char*)*multisliced->B/2);
         handles[i]->dope_size = multisliced->B;
     }
     for (word_t i = 0;i < blocks; i += last_mult) {
         char* cur = (last_handle->dope)[i];
-        cur = (char*)realloc(cur,last_seg_size * last_handle->element_size);
+        cur = (char*)Realloc(cur,last_seg_size * last_handle->element_size, mem_size);
         for (word_t j=1;j<last_mult;j++) {
             memcpy(cur + j*mem_size, (last_handle->dope)[i+j], mem_size);
-            free((last_handle->dope)[i+j]);
+            Free((last_handle->dope)[i+j], mem_size);
         }
         (last_handle->dope)[ins] = cur;
         ins++;
@@ -76,21 +76,22 @@ inline static void rebuild(multisliced_t* multisliced) {
     last_handle->num_segs = blocks/last_mult;
     last_handle->last_seg_num_elements = last_seg_size;
     last_handle->last_seg_size = last_seg_size;
+    set_instantaneous(last_seg_size * last_handle->element_size);
 }
 
 
 
 void* initialize(word_t seg_size, word_t element_size, word_t init_size, word_t r) {
-    multisliced_t* multisliced = (multisliced_t*)malloc(sizeof(multisliced_t));
+    multisliced_t* multisliced = (multisliced_t*)Malloc(sizeof(multisliced_t));
     multisliced->r = r;
     multisliced->B = 1 << INIT_POW;
     multisliced->pow = INIT_POW;
     multisliced->N = 0;
-    multisliced->handles = (handle_t**)malloc(r*sizeof(handle_t*));
+    multisliced->handles = (handle_t**)Malloc(r*sizeof(handle_t*));
     for (word_t i = 0; i < r-1;i++) {
         multisliced->handles[i] = initialize_dope_vector(multisliced->B, 2, element_size);
     }
-    multisliced->Ni = (word_t*)calloc(r+1, sizeof(word_t));
+    multisliced->Ni = (word_t*)Calloc(r+1, sizeof(word_t));
     return multisliced;
 }
 
@@ -193,6 +194,30 @@ void update(void* array, word_t v, char new_ele[]) {
     dope_update((multisliced->handles)[index.block], index.segnum, index.offset, new_ele);
 }
 
+void make_space(void* array) {
+    multisliced_t* multisliced = (multisliced_t*)array;
+    handle_t** handles = multisliced->handles;
+    handle_t* h1 = handles[0];
+    if (h1->last_seg_num_elements == h1->last_seg_size || 
+               h1->num_elements == 0) {
+        insert_segment(h1, multisliced->B);
+        if (h1->num_elements != 0 && multisliced->Ni[1] < multisliced->N) {
+            multisliced->Ni[1] += multisliced->B;
+        }
+    }
+    h1->last_seg_num_elements += 1;
+    h1->num_elements += 1;
+    multisliced->N += 1;
+    multisliced->Ni[0] += 1;
+    if (h1->num_segs == h1->dope_size && 
+        h1->last_seg_num_elements == h1->last_seg_size) {
+        multisliced->Ni[1] += multisliced->B;
+        combine_blocks(multisliced);
+    }
+    if (multisliced->N == 1 << (multisliced->pow * multisliced->r)) {
+        rebuild(multisliced);
+    } 
+}
 
 char* name(void* array) {
     multisliced_t* multisliced = (multisliced_t*)array;

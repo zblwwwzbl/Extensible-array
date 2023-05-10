@@ -4,9 +4,12 @@
 #include <time.h>
 #include "interface.h"
 
-#define DATA 16
-#define ELE_SIZE 140
+#define DATA 2
+#define ELE_SIZE 16
 #define R 2
+
+word_t memory_overhead;
+
 
 typedef struct {
     void* data;
@@ -173,6 +176,7 @@ int main(int argc, char *argv[]) {
     // matrix_t* m = create_matrix(16, 16, ELE_SIZE);
     // matrix_t* n = create_matrix(16, 16, ELE_SIZE);
     void* array = initialize(DEFAULT_K, ELE_SIZE, DATA, R);
+    printf("%u \n", memory_overhead);
     for (int i=0;i<DATA;i++) {
         char ele1[ELE_SIZE] = {[0 ... ELE_SIZE-1] = -1};
         // char ele2[ELE_SIZE];
@@ -182,6 +186,7 @@ int main(int argc, char *argv[]) {
         insert(array, ele1);
         // insert(n->data, ele2);
     }
+    printf("%u \n", memory_overhead);
     // print_info(array);
     // print_info(n->data);
     // float startTime = (float)clock()/CLOCKS_PER_SEC;

@@ -42,6 +42,11 @@ void update(void* array, word_t v, char new_ele[]) {
     memcpy(mono->nodes + v*mono->element_size, new_ele, mono->element_size);
 }
 
+void make_space(void* array) {
+    monolithic_t* mono = (monolithic_t*)array;
+    mono->num_elements += 1;
+}
+
 void free_mem(void* array) {
     monolithic_t* mono = (monolithic_t*)array;
     free(mono->nodes);

@@ -18,7 +18,7 @@
 #endif
 
 int main(int argc, char *argv[]) {
-    FILE* fp = fopen("./data/MS3_results.csv", "a");
+    FILE* fp = fopen("./data/insert_length_results.csv", "a");
     srand(SEED); 
     float startTime = (float)clock()/CLOCKS_PER_SEC;
     word_t num_ele = (word_t) NUM_ELE;
@@ -36,6 +36,6 @@ int main(int argc, char *argv[]) {
     for (int i=0;i<SIZE;i++) {
         block[i] = block[i]+ rand_index + i;
     }
-    fprintf(fp, "%s, %f, %d\n", name(array), timeElapsed, SIZE);
+    fprintf(fp, "%s, %f, %d\n", name(array), timeElapsed, NUM_ELE);
     free_mem(array);
 }
