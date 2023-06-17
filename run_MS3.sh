@@ -1,5 +1,5 @@
 echo "array_type,time,element_size" > "./data/MS3_results.csv"
-for i in {1..50}
+for i in {1..100}
 do
     for SIZE in 1104 1120 1136 1152 1168
     do

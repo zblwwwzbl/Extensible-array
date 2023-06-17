@@ -6,6 +6,8 @@
 #define DEFAULT_INIT_SIZE 1024
 #define DEFAULT_MULT 2
 
+word_t memory_overhead;
+
 typedef struct {
     char* nodes;
     word_t size;
@@ -28,12 +30,15 @@ void* initialize(word_t k, word_t element_size, word_t init_size, word_t r) {
 void insert(void* array, char new_ele[]) {
     geometric_t* geo = (geometric_t*)array;
     if (geo->size == geo->num_elements) {
+        word_t old_size = geo->size;
         geo->size *= geo->growth_multiplier;
-        geo->nodes = (char*)realloc(geo->nodes, geo->size*geo->element_size);
+        geo->nodes = (char*)Realloc(geo->nodes, geo->size*geo->element_size, old_size*geo->element_size);
+        set_instantaneous(old_size*geo->element_size + memory_overhead);
     }
     void* start = geo->nodes + geo->num_elements * geo->element_size;
     memcpy(start, new_ele, geo->element_size);
     geo->num_elements += 1;
+    memory_overhead -= geo->element_size;
 }
 
 void* get(void* array, word_t v) {

@@ -5,6 +5,8 @@
 
 #define INIT_POW 3
 
+word_t memory_overhead;
+
 typedef struct {
     handle_t** handles;
     word_t B;
@@ -43,7 +45,7 @@ inline static void combine_blocks(multisliced_t* multisliced) {
         handles[i]->last_seg_num_elements = 0;
         handles[i]->num_elements = 0;
         multisliced->Ni[i+2] += seg_size;
-        set_instantaneous(cur_handle->element_size*seg_size);
+        set_instantaneous(cur_handle->element_size*seg_size+memory_overhead);
     }
 }
 
@@ -76,7 +78,7 @@ inline static void rebuild(multisliced_t* multisliced) {
     last_handle->num_segs = blocks/last_mult;
     last_handle->last_seg_num_elements = last_seg_size;
     last_handle->last_seg_size = last_seg_size;
-    set_instantaneous(last_seg_size * last_handle->element_size);
+    set_instantaneous(last_seg_size * last_handle->element_size + memory_overhead);
 }
 
 

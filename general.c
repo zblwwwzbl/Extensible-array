@@ -27,8 +27,8 @@ void insert_segment(handle_t* handle, word_t segsize) {
     if (handle->num_segs == handle->dope_size) {
         word_t old_size = handle->dope_size;
         handle->dope_size = handle->growth_multiplier * handle->dope_size;
-        handle->dope = (char**)Realloc(handle->dope,sizeof(char*)*(handle->dope_size), old_size);
-        set_instantaneous(memory_overhead + old_size);
+        handle->dope = (char**)Realloc(handle->dope,sizeof(char*)*(handle->dope_size), sizeof(char*)*old_size);
+        set_instantaneous(memory_overhead + sizeof(char*)*old_size);
     }
     handle->dope[handle->num_segs] = (char*)Malloc(sizeof(char)*segsize*handle->element_size);
     handle->num_segs += 1;

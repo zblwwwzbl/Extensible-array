@@ -23,11 +23,11 @@ ${target}MS_${R}: ${target}.o multisliced.o general.o
 ${target}Geo: ${target}.o geometric.o general.o
 	$(CC) $(FLAGS) -o ${target}Geo ${target}.o geometric.o general.o
 
-${target}.o: ${target}.c general.h interface.h
-	$(CC) $(FLAGS) -DSIZE=${SIZE} -DR=${R} -c ${target}.c
+# ${target}.o: ${target}.c general.h interface.h
+# 	$(CC) $(FLAGS) -DSIZE=${SIZE} -DR=${R} -c ${target}.c
 
-# insert_length.o: insert_length.c general.h interface.h
-# 	$(CC) $(FLAGS) -DSIZE=${SIZE} -DR=${R} -DNUM_ELE=${NUM_ELE} -c insert_length.c
+insert_length.o: insert_length.c general.h interface.h
+	$(CC) $(FLAGS) -DSIZE=${SIZE} -DR=${R} -DNUM_ELE=${NUM_ELE} -c insert_length.c
 
 testMS: main.o multisliced.o general.o
 	$(CC) $(FLAGS) -o testMS main.o multisliced.o general.o

@@ -6,6 +6,8 @@
 #define INIT_B 16
 #define INIT_POW 4
 
+word_t memory_overhead;
+
 typedef struct {
     handle_t* handle;
     word_t B;
@@ -37,12 +39,12 @@ inline static void rebuild(HAT_t *hat) {
         handle->dope[ins] = cur;
         ins++;
     }
-    set_instantaneous(hat->B * handle->element_size);
     handle->dope_size = hat->B;
     handle->dope = (char**)Realloc(handle->dope,sizeof(char*)*(handle->dope_size), sizeof(char*)*(handle->dope_size)/2);
     handle->last_seg_size = hat->B;
     handle->last_seg_num_elements = hat->B;
     handle->num_segs /= 2;
+    set_instantaneous(hat->B * handle->element_size + memory_overhead);
 }
 
 void insert(void* array, char new_ele[]){

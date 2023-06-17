@@ -28,7 +28,12 @@ int main(int argc, char *argv[]) {
         key_t key = (key_t) rand() % NUM_ELE;
         memcpy(ele, &key, sizeof(key_t));
         insert(array, ele);
-        word_t mem_use = memory_overhead + instantaneous_overhead;
+        word_t mem_use;
+        if (instantaneous_overhead > memory_overhead) {
+            mem_use = instantaneous_overhead;
+        } else {
+            mem_use = memory_overhead;
+        }
         set_instantaneous(0);
         fprintf(fp, ",%u", mem_use);
     }

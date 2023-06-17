@@ -36,6 +36,6 @@ int main(int argc, char *argv[]) {
     for (int i=0;i<SIZE;i++) {
         block[i] = block[i]+ rand_index + i;
     }
-    fprintf(fp, "%s, %f, %d\n", name(array), timeElapsed, NUM_ELE);
+    fprintf(fp, "%s, %f, %d\n", name(array), timeElapsed, (int) NUM_ELE);
     free_mem(array);
 }
