@@ -4,7 +4,7 @@ Research project on Extensible Arrays, as a part of the undergraduate subject CO
 
 ## Usage
 
-The repository contains 5 array implementations: monolithic array (monolithic.c), sliced array (sliced.c), SQarray (SQarray.c), HAT (HAT.c), geometric array (geometric.c) and multisliced array (multisliced.c).
+The repository contains 6 array implementations: monolithic array (monolithic.c), sliced array (sliced.c), SQarray (SQarray.c), HAT (HAT.c), geometric array (geometric.c) and multisliced array (multisliced.c).
 
 The compilation logic can be found in the Makefile. Usually, make requires 3 additional arguments:
  - target: the test_name
