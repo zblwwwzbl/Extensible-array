@@ -1,4 +1,4 @@
-array_type,time,element_size
+array_type,time,element_size,k
 base, 0.026001, 128, 549770476255
 mono, 0.028874, 128, 549770476255
 sliced, 0.041138, 128, 549770476255

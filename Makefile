@@ -23,11 +23,11 @@ ${target}MS_${R}: ${target}.o multisliced.o general.o
 ${target}Geo: ${target}.o geometric.o general.o
 	$(CC) $(FLAGS) -o ${target}Geo ${target}.o geometric.o general.o
 
-# ${target}.o: ${target}.c general.h interface.h
-# 	$(CC) $(FLAGS) -DSIZE=${SIZE} -DR=${R} -c ${target}.c
+${target}.o: ${target}.c general.h interface.h
+	$(CC) $(FLAGS) -DSIZE=${SIZE} -DR=${R} -c ${target}.c
 
-insert_length.o: insert_length.c general.h interface.h
-	$(CC) $(FLAGS) -DSIZE=${SIZE} -DR=${R} -DNUM_ELE=${NUM_ELE} -c insert_length.c
+# insert_length.o: insert_length.c general.h interface.h
+# 	$(CC) $(FLAGS) -DSIZE=${SIZE} -DR=${R} -DNUM_ELE=${NUM_ELE} -c insert_length.c
 
 testMS: main.o multisliced.o general.o
 	$(CC) $(FLAGS) -o testMS main.o multisliced.o general.o
@@ -41,13 +41,13 @@ main.o: main.c general.h interface.h
 multisliced.o: multisliced.c general.h interface.h
 	$(CC) $(FLAGS) -c multisliced.c
 
-SQarray.o: SQarray.c SQarray.h general.h interface.h
+SQarray.o: SQarray.c general.h interface.h
 	$(CC) $(FLAGS) -c SQarray.c
 
-sliced.o: sliced.c sliced.h general.h interface.h
+sliced.o: sliced.c general.h interface.h
 	$(CC) $(FLAGS) -c sliced.c
 
-monolithic.o: monolithic.c monolithic.h general.h interface.h
+monolithic.o: monolithic.c general.h interface.h
 	$(CC) $(FLAGS) -c monolithic.c
 
 HAT.o: HAT.c general.h interface.h

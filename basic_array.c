@@ -124,36 +124,36 @@ int main(int argc, char *argv[]) {
     srand(SEED);
     int num_ele = (int) NUM_ELE;
     node_t* array = (node_t*)malloc(sizeof(node_t)*num_ele);
-    float startTime = (float)clock()/CLOCKS_PER_SEC;
+    // float startTime = (float)clock()/CLOCKS_PER_SEC;
     for (unsigned int i=0;i<num_ele;i++) {
         char content[SIZE] = {[0 ... SIZE-1] = -1};
         array[i].key = (unsigned int) rand() % num_ele;
         memcpy(content, array[i].data, SIZE);
     }
-    float endTime = (float)clock()/CLOCKS_PER_SEC;
-    // float startTime = (float)clock()/CLOCKS_PER_SEC;
-    // if (strcmp(argv[1], "reverse") == 0) {
-    //     reverse(array, NUM_DATA);
-    // } else if (strcmp(argv[1], "incone") == 0) {
-    //     incone(array);
-    // } else if (strcmp(argv[1], "sort") == 0) {
-    //     quicksort(array, 0, NUM_DATA-1);
-    // } else if (strcmp(argv[1], "heapsort") == 0) {
-    //     heapSort(array, NUM_DATA);
-    // } else if (strcmp(argv[1], "access") == 0) {
-    //     unsigned int count = access(array);
-    //     array[0].key = count;
-    // } else if (strcmp(argv[1], "random_access") == 0) {
-    //     unsigned int count = random_access(array);
-    //     array[0].key = count;
-    // }
     // float endTime = (float)clock()/CLOCKS_PER_SEC;
+    float startTime = (float)clock()/CLOCKS_PER_SEC;
+    if (strcmp(argv[1], "reverse") == 0) {
+        reverse(array, NUM_DATA);
+    } else if (strcmp(argv[1], "incone") == 0) {
+        incone(array);
+    } else if (strcmp(argv[1], "sort") == 0) {
+        quicksort(array, 0, NUM_DATA-1);
+    } else if (strcmp(argv[1], "heapsort") == 0) {
+        heapSort(array, NUM_DATA);
+    } else if (strcmp(argv[1], "access") == 0) {
+        unsigned int count = access(array);
+        array[0].key = count;
+    } else if (strcmp(argv[1], "random_access") == 0) {
+        unsigned int count = random_access(array);
+        array[0].key = count;
+    }
+    float endTime = (float)clock()/CLOCKS_PER_SEC;
     float timeElapsed = endTime - startTime;
     int rand_index = (int) rand() % num_ele;
     node_t block = array[rand_index];
     for (int i=0;i<SIZE;i++) {
         block.data[i] = block.data[i]+ rand_index + i;
     }
-    fprintf(fp, "%s, %f, %d\n", "base", timeElapsed, num_ele);
+    fprintf(fp, "%s, %f, %d\n", "base", timeElapsed, SIZE);
     free(array);
 }
